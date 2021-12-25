@@ -4,10 +4,10 @@ use crossterm::style::Print;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType};
 use crossterm::execute;
 use std::io::{stdout, Write};
-#[path = "loader.rs"] pub mod loader;
-#[path = "voice.rs"] pub mod voice;
+use crate::mixer;
+use crate::voice;
 
-pub fn init_inputs_watches(voices: & mut Vec<voice::Voice>, loader: & mut loader::BankLoader) {
+pub fn init_inputs_watches(mixerIn: & mut mixer::Mixer) {
     let mut stdout = stdout();
     //going into raw mode
     enable_raw_mode().unwrap();
@@ -29,29 +29,29 @@ pub fn init_inputs_watches(voices: & mut Vec<voice::Voice>, loader: & mut loader
                 code: KeyCode::Char('y'),
                 modifiers: _no_modifiers,
                 //clearing the screen and printing our message
-            }) => voices[0].triggerSound(0, voice::PlaybackType::OneShot),
+            }) => mixerIn.voices[0].trigger_sound(0, voice::PlaybackType::OneShot),
             Event::Key(KeyEvent {
                 code: KeyCode::Char('s'),
                 modifiers: _no_modifiers,
-            }) => voices[1].triggerSound(1, voice::PlaybackType::OneShot),
+            }) => mixerIn.voices[1].trigger_sound(1, voice::PlaybackType::OneShot),
             Event::Key(KeyEvent {
                 code: KeyCode::Char('x'),
                 modifiers: _no_modifiers,
-            }) => voices[2].triggerSound(2, voice::PlaybackType::OneShot),
+            }) => mixerIn.voices[2].trigger_sound(2, voice::PlaybackType::OneShot),
             Event::Key(KeyEvent {
                 code: KeyCode::Char('d'),
                 modifiers: _no_modifiers,
-            }) => voices[3].triggerSound(3, voice::PlaybackType::OneShot),
+            }) => mixerIn.voices[3].trigger_sound(3, voice::PlaybackType::OneShot),
             
             // Bank changes
             Event::Key(KeyEvent {
                 code: KeyCode::Char('i'),
                 modifiers: _no_modifiers,
-            }) => loader.switch_to_previous_bank(),
+            }) => mixerIn.loader.switch_to_previous_bank(),
             Event::Key(KeyEvent {
                 code: KeyCode::Char('o'),
                 modifiers: _no_modifiers,
-            }) => loader.switch_to_next_bank(),
+            }) => mixerIn.loader.switch_to_next_bank(),
 
             // Shut down
             Event::Key(KeyEvent {

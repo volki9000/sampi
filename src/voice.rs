@@ -39,14 +39,14 @@ impl Voice {
         }
     }
 
-     pub fn triggerSound(&mut self, sampleIndex: usize, pbType: PlaybackType) -> () {
+     pub fn trigger_sound(&mut self, sampleIndex: usize, pbType: PlaybackType) -> () {
         self.play = true;
         self.playback_type = pbType;
         self.active_sample = sampleIndex;
         self.playhead_position = 0;
     }
 
-    pub fn stopSound(&mut self) -> () {
+    pub fn stop_sound(&mut self) -> () {
         if matches!(self.playback_type, PlaybackType::OneShot) {
             return;
         }
@@ -62,10 +62,10 @@ impl Voice {
             self.play = false;
         }
         if !self.play {
-            return (0, 0);
+            return (0, 0)
         }
         let current_sample = bank[self.active_sample][self.playhead_position];
         self.playhead_position = self.playhead_position + 1;
-        return current_sample;
+        current_sample
     }
 }
