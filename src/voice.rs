@@ -39,10 +39,10 @@ impl Voice {
         }
     }
 
-     pub fn trigger_sound(&mut self, sampleIndex: usize, pbType: PlaybackType) -> () {
+     pub fn trigger_sound(&mut self, sample_index: usize, pb_type: PlaybackType) -> () {
         self.play = true;
-        self.playback_type = pbType;
-        self.active_sample = sampleIndex;
+        self.playback_type = pb_type;
+        self.active_sample = sample_index;
         self.playhead_position = 0;
     }
 
@@ -54,7 +54,7 @@ impl Voice {
         self.playhead_position = 0;
     }
 
-    pub fn out(&mut self, bank: &Vec<Vec<(u16, u16)>>) -> (u16, u16) {
+    pub fn out(&mut self, bank: &Vec<Vec<(i16, i16)>>) -> (i16, i16) {
         let sample_size = bank[self.active_sample].len();
         if matches!(self.playback_type, PlaybackType::Looped)
             && self.playhead_position >= sample_size

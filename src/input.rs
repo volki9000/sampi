@@ -7,7 +7,7 @@ use std::io::{stdout, Write};
 use crate::mixer;
 use crate::voice;
 
-pub fn init_inputs_watches(mixerIn: & mut mixer::Mixer) {
+pub fn init_inputs_watches(mixer_in: & mut mixer::Mixer) {
     let mut stdout = stdout();
     //going into raw mode
     enable_raw_mode().unwrap();
@@ -29,29 +29,29 @@ pub fn init_inputs_watches(mixerIn: & mut mixer::Mixer) {
                 code: KeyCode::Char('y'),
                 modifiers: _no_modifiers,
                 //clearing the screen and printing our message
-            }) => mixerIn.voices[0].trigger_sound(0, voice::PlaybackType::OneShot),
+            }) => mixer_in.voices[0].trigger_sound(0, voice::PlaybackType::OneShot),
             Event::Key(KeyEvent {
                 code: KeyCode::Char('s'),
                 modifiers: _no_modifiers,
-            }) => mixerIn.voices[1].trigger_sound(1, voice::PlaybackType::OneShot),
+            }) => mixer_in.voices[1].trigger_sound(1, voice::PlaybackType::OneShot),
             Event::Key(KeyEvent {
                 code: KeyCode::Char('x'),
                 modifiers: _no_modifiers,
-            }) => mixerIn.voices[2].trigger_sound(2, voice::PlaybackType::OneShot),
+            }) => mixer_in.voices[2].trigger_sound(2, voice::PlaybackType::OneShot),
             Event::Key(KeyEvent {
                 code: KeyCode::Char('d'),
                 modifiers: _no_modifiers,
-            }) => mixerIn.voices[3].trigger_sound(3, voice::PlaybackType::OneShot),
+            }) => mixer_in.voices[3].trigger_sound(3, voice::PlaybackType::OneShot),
             
             // Bank changes
             Event::Key(KeyEvent {
                 code: KeyCode::Char('i'),
                 modifiers: _no_modifiers,
-            }) => mixerIn.loader.switch_to_previous_bank(),
+            }) => mixer_in.loader.switch_to_previous_bank(),
             Event::Key(KeyEvent {
                 code: KeyCode::Char('o'),
                 modifiers: _no_modifiers,
-            }) => mixerIn.loader.switch_to_next_bank(),
+            }) => mixer_in.loader.switch_to_next_bank(),
 
             // Shut down
             Event::Key(KeyEvent {

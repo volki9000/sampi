@@ -16,7 +16,7 @@ loadNextBank(){
 } */
 
 pub struct BankLoader {
-    pub bank: Vec<Vec<(u16, u16)>>,
+    pub bank: Vec<Vec<(i16, i16)>>,
     bank_index: usize,
     max_bank_index: usize
 }
@@ -66,11 +66,11 @@ impl BankLoader {
                     let data = smp.unwrap();
                     if sample_index % 2 == 0
                     {
-                        channel_one_data = data as u16;
+                        channel_one_data = data as i16;
                     }
                     else
                     {
-                        converted_sample.push((channel_one_data, data as u16));
+                        converted_sample.push((channel_one_data, data as i16));
                     }
                     
                 }
