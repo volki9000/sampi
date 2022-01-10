@@ -29,14 +29,14 @@ impl BankLoader {
             max_bank_index: 0
         };
         let sample_path = env::current_dir().unwrap().join("samples");
-        let mut paths : Vec<_> = fs::read_dir(sample_path).unwrap().collect();
+        let mut paths : Vec<_> = fs::read_dir(sample_path.clone()).unwrap().collect();
         paths.sort_by_key(|path|{
             path.as_ref().unwrap().path()
         });
 
         let mut next_bank = 0;
         for p in paths{
-            if p.as_ref().unwrap().path().to_str().unwrap() == format!("{:03}", next_bank)
+            if p.as_ref().unwrap().path() == sample_path.join(format!("{:03}", next_bank))
             {
                 if next_bank > 0
                 {
@@ -49,13 +49,16 @@ impl BankLoader {
                 println!("Couldn't open {:?}", p.unwrap().path());
             }
         }
+        println!("BankLoader found {:?} banks.", next_bank);
+        bl.load_bank();
         bl
     }
 
    fn load_bank(&mut self){
         self.bank = Vec::new();
         for k in 0..12 {
-            let sample_path = format!("{}{:03}{}{:03}{}", "samples/" , self.bank_index , "/", k,".wav");
+            let sample_path = format!("{}{:03}{}{:02}{}", "samples\\" , self.bank_index , "\\", k,".wav");
+            println!("BankLoader trynna load {:?}", sample_path);
             let mut reader = hound::WavReader::open(sample_path.to_string()).expect(format!("Couldn't open {:?}", sample_path).as_str());
             let sample = reader.samples::<i16>();
             let mut converted_sample = Vec::new();
