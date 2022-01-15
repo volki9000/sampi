@@ -26,11 +26,7 @@ fn main() -> anyhow::Result<()> {
 
     std::thread::spawn(move || {
         let mut mixer = mixer::Mixer::new();
-        input::init_inputs_watches(&mut mixer);
-        loop {
-            let smp = mixer.get_smp();
-            sample_buffer[buffer_position] = (smp[0], smp[1]);
-        }
+        input::init_inputs_watches(&mut mixer, &mut sample_buffer, &buffer_position);
     });
 
     let host = cpal::default_host();
@@ -41,9 +37,9 @@ fn main() -> anyhow::Result<()> {
     println!("Default device: {:?}", device.name());
     println!("Default output config: {:?}", config);
     let output_data_fn = move |output_data: &mut [i16], _: &cpal::OutputCallbackInfo| {
-        output_data[0] = sample_buffer[buffer_position].0;
-        output_data[1] = sample_buffer[buffer_position].1;
         buffer_position = (buffer_position + 1) % 1024;
+        output_data[0] = sample_buffer[buffer_position].0;
+        output_data[1] = sample_buffer[buffer_position].1; 
     };
     let stream = device.build_output_stream(&config, output_data_fn, err_fn)?;
     stream.play()?;

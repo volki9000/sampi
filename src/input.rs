@@ -7,14 +7,16 @@ use std::io::{stdout, Write};
 use crate::mixer;
 use crate::voice;
 
-pub fn init_inputs_watches(mixer_in: & mut mixer::Mixer) {
+pub fn init_inputs_watches(mixer_in: & mut mixer::Mixer, sample_buffer: & mut [(i16, i16); 1024], buffer_position: & usize) {
     let mut stdout = stdout();
     //going into raw mode
-    enable_raw_mode().unwrap();
+//    enable_raw_mode().unwrap();
 
     //clearing the screen, going to top left corner and printing welcoming message
     execute!(stdout, Clear(ClearType::All), cursor::MoveTo(0, 0), Print(r#"p to exit"#))
             .unwrap();
+
+    let mut write_buffer_position = *buffer_position;
 
     //key detection
     loop {
@@ -57,8 +59,15 @@ pub fn init_inputs_watches(mixer_in: & mut mixer::Mixer) {
             Event::Key(KeyEvent {
                 code: KeyCode::Char('p'),
                 modifiers: _no_modifiers,
-            }) => break,
-            _ => return
+            }) => mixer_in.stop_sound(),
+            _ => break
+        }
+
+        if write_buffer_position != *buffer_position
+        {
+            let smp = mixer_in.get_smp();
+            sample_buffer[write_buffer_position] = (smp[0], smp[1]);
+            write_buffer_position = (write_buffer_position + 1) % 1024;
         }
     }
             
